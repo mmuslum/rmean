@@ -1,5 +1,5 @@
-# rwindman
-Tools to process wind data
+# rmean
+Tools to calculate mean xts object
 
 ##### Installation
 
