@@ -6,5 +6,5 @@ Tools to calculate mean xts object
 First, `devtools` package must be installed prior the command below.
 
 ```R
-devtools::install_github("mmuslum/rwindman")
+devtools::install_github("mmuslum/rmean")
 ```
