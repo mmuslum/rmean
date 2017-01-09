@@ -17,7 +17,7 @@ fillna.xts <- function(x) {
   dix <- diff(ix)
   unit <- attr(dix, "units")
   mix <- Mode(dix)
-  i <- range(ix) #baslangıc ve bitiş
+  i <- range(ix)
   a <- seq(i[1], i[2], paste(mix, unit))
   y <- merge(x, xts::xts(, a))
   return(y)
@@ -56,41 +56,41 @@ MeanBy <- function(xdata, on, percNA=NULL) {
   cls <- class(xdata)
 
   mymean <- function(x, period, ...) {
-    if(length(x)<(period*(100-percNA)/100)) return(NA)
+    if (length(x) < (period*(100 - percNA)/100)) return(NA)
     #   cat(length(x), " = ", period, " \ ")
     #   cat(x)
     #   stop()
     # Calculate NA counts and their rates to length of columns
-    c1<-sapply(X=x, FUN=function(x) sum(is.na(x)))
+    c1 <- sapply(X = x, FUN = function(x) sum(is.na(x)))
     # Calculate length of each column.
-    c2<-sapply(X=x, FUN=function(x) length(x))
-    p <- (c1/c2)*100 # NA rate
-    r<- (p > percNA) # if Na rate is less than 25%
+    c2 <- sapply(X = x, FUN = function(x) length(x))
+    p <- (c1/c2)*100        # NA rate
+    r <- (p > percNA)        # if Na rate is less than 25%
     # Get the mean with removing NA
-    res<-sapply(X=x, FUN=mean, na.rm=T)
+    res <- sapply(X = x, FUN = mean, na.rm = T)
     # If NA is TRUE, then replace the value
     # with NA.
-    res[which(r == TRUE, arr.ind=TRUE)] <- NA
+    res[which(r == TRUE, arr.ind = TRUE)] <- NA
     #   print(res)
     return(res)
   }
 
-  ep       <- xts::endpoints(xdata, on=on)
+    ep       <- xts::endpoints(xdata, on = on)
   # use data of previous minutes for hourly mean
-  if(on=="hours") {
-    ep     <- c(ep[1], (ep[c(-1,-length(ep))]+1), ep[length(ep)])
+   if (on == "hours") {
+    ep     <- c(ep[1], (ep[c(-1, -length(ep))] + 1), ep[length(ep)])
   }
-  per      <- Mode(ep[2:length(ep)] - ep[1:(length(ep)-1)])
-  x        <- if(!is.null(percNA))
-    period.apply(xdata, INDEX=ep, FUN=mymean, per) else # with 25% criteria
-      period.apply(xdata, INDEX=ep, FUN=mean, na.rm=T)    # with na.rm=T criteria
+    per      <- Mode(ep[2:length(ep)] - ep[1:(length(ep) - 1)])
+    x        <- if (!is.null(percNA))
+    period.apply(xdata, INDEX = ep, FUN = mymean, per) else     # with 25% criteria
+    period.apply(xdata, INDEX = ep, FUN = mean, na.rm = T)     # with na.rm=T criteria
 
-  index(x) <- if(on=="months")
-    as.yearmon(index(x), format="%Y %m") else
+    index(x) <- if (on == "months")
+    as.yearmon(index(x), format = "%Y %m") else
       as.POSIXct(trunc(index(x), on))
-  x[is.nan(x)] <- NA
-  x <- na.trim(x,is.na="all")
-  class(x) <- cls
+    x[is.nan(x)] <- NA
+    x <- na.trim(x,is.na = "all")
+    class(x) <- cls
   return(x)
 }
 
